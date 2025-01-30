@@ -112,7 +112,7 @@ const state = new ReactiveState({
       });
 
       let src = this.recordings[index].src;
-      this.audio.src = URL.createObjectURL(src);
+      this.audio.src = src;
     }
   },
   select(e) {
@@ -164,9 +164,16 @@ const state = new ReactiveState({
         "Can't remove recording while it's playing. pause or stop first.";
       return;
     }
+    let filtered = this.recordings.filter((_, i) => i != index);
 
-    URL.revokeObjectURL(src);
-    this.recordings = this.recordings.filter((_, i) => i != index);
+    // if the selected recording gets removed.
+    if (filtered.length && filtered[0]) {
+      filtered[0].selected = true;
+      this.audio.src = filtered[0].src;
+    }
+
+    this.recordings = filtered;
+    URL.revokeObjectURL(src); // revoke removed rec blob- clears memory
   },
 });
 
@@ -204,10 +211,14 @@ const template = /*html*/ `
       <div class="recording">
         <span onclick="setAudioSrc(index)" class="recording-logo {recording.selected ? 'selected' : ''}">🔴</span>
         <input onmouseenter="select" onchange="changeTitle(index)" class="recording-title" type="text" value="{recording.title}"/>
-        <button onclick="download(index)" class="download-btn">
-         {!recording.downloaded ? '&#x2B07;' : '&#10003;'}
+        
+        <button onclick="download(index)" class="rec-card-btn">
+          <svg width="50" viewBox="0 0 100 100">
+            <circle id="circle" cx="50" cy="50" r="40" stroke="#ff5f5f" fill="none"  stroke-width="5" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+            <text x="50" y="50" font-size="2rem" fill="#ccc" text-anchor="middle" dominant-baseline="middle">{!recording.downloaded ? '&#x2B07;' : '&#10003;'}</text>
+          </svg>
         </button>
-        <button onclick="remove(index)" class="download-btn">
+        <button onclick="remove(index)" class="rec-card-btn">
           &#10005;
         </button>
       </div>
