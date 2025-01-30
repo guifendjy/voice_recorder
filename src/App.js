@@ -3,15 +3,6 @@ import vite from "/vite.svg";
 
 import { setupRecorder, formatTime, findMatchingBlob } from "./utils";
 
-let master;
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.master) {
-    master = window.master;
-  } else {
-    alert("master is not available");
-  }
-});
-
 const { ReactiveState, createElement } = master; // from CDN link
 
 let recorder = setupRecorder(); // returns a promise
