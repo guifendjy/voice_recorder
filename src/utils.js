@@ -11,7 +11,7 @@ let dataArray;
 
 let clearAnimation;
 
-export function setupRecorder() {
+export function setupRecorder({ audioType = "audio/webm" } = {}) {
   let response;
   try {
     response = navigator.mediaDevices
@@ -19,7 +19,7 @@ export function setupRecorder() {
         audio: true,
       })
       .then((stream) => {
-        return setupStream(stream);
+        return setupStream(stream, audioType);
       })
       .catch((err) => {
         console.error("Error setting up recorder", err);
@@ -33,8 +33,8 @@ export function setupRecorder() {
   return response;
 }
 
-function setupStream(stream) {
-  recorder = new MediaRecorder(stream);
+function setupStream(stream, mimeType) {
+  recorder = new MediaRecorder(stream, { mimeType });
   const { canvas, draw } = setUpVisualizer(); // gets a stream an returns cavans
   const audioID = uniid();
 
@@ -50,7 +50,7 @@ function setupStream(stream) {
     };
 
     recorder.onstop = (e) => {
-      const blob = new Blob(dataChunks, { type: "audio/ogg; codecs=opus" });
+      const blob = new Blob(dataChunks, { type: mimeType });
       dataChunks = [];
       let blobURL = window.URL.createObjectURL(blob);
       const audio = new Audio(blobURL);
