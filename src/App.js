@@ -5,6 +5,7 @@ import { setupRecorder, formatTime, findMatchingBlob } from "./utils";
 
 const { ReactiveState, createElement } = master; // from CDN link
 
+let audioType = "audio/webm";
 let recorder = setupRecorder(); // returns a promise
 
 const state = new ReactiveState({
@@ -69,7 +70,9 @@ const state = new ReactiveState({
           }
           let data = {
             selected: true,
-            title: `untitled_${this.recordings.length + 1}.webm`,
+            title: `untitled_${this.recordings.length + 1}.${
+              audioType.split("/")[1]
+            }`,
             blob,
             src: URL.createObjectURL(blob),
             downloaded: false,

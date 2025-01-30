@@ -34,7 +34,7 @@ export function setupRecorder({ audioType = "audio/webm" } = {}) {
 }
 
 function setupStream(stream, mimeType) {
-  recorder = new MediaRecorder(stream, { mimeType });
+  recorder = new MediaRecorder(stream, { mimeType: mimeType });
   const { canvas, draw } = setUpVisualizer(); // gets a stream an returns cavans
   const audioID = uniid();
 
