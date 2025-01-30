@@ -177,6 +177,7 @@ body {
 }
 .top {
   min-height: 20%;
+  max-height: 20%;
 }
 
 .top .top-content {

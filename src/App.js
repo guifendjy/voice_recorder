@@ -207,35 +207,35 @@ const template = /*html*/ `
   <h1>Voice Recorder</h1>
   {start:if recordings.length}
     <div class="list">
-    {for:each recording, index of recordings}
-      <div class="recording">
-        <span onclick="setAudioSrc(index)" class="recording-logo {recording.selected ? 'selected' : ''}">🔴</span>
-        <input onmouseenter="select" onchange="changeTitle(index)" class="recording-title" type="text" value="{recording.title}"/>
-        
-        <button onclick="download(index)" class="rec-card-btn">
-          <svg width="50" viewBox="0 0 100 100">
-            <circle id="circle" cx="50" cy="50" r="40" stroke="#ff5f5f" fill="none"  stroke-width="5" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
-            <text x="50" y="50" font-size="2rem" fill="#ccc" text-anchor="middle" dominant-baseline="middle">{!recording.downloaded ? '&#x2B07;' : '&#10003;'}</text>
-          </svg>
-        </button>
-        <button onclick="remove(index)" class="rec-card-btn">
-          &#10005;
-        </button>
-      </div>
-    {end:each}
-  </div>
+      {for:each recording, index of recordings}
+        <div class="recording">
+          <span onclick="setAudioSrc(index)" class="recording-logo {recording.selected ? 'selected' : ''}">🔴</span>
+          <input onmouseenter="select" onchange="changeTitle(index)" class="recording-title" type="text" value="{recording.title}"/>
+          
+          <button onclick="download(index)" class="rec-card-btn">
+            <svg width="50" viewBox="0 0 100 100">
+              <circle id="circle" cx="50" cy="50" r="40" stroke="#ff5f5f" fill="none"  stroke-width="5" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+              <text x="50" y="50" font-size="2rem" fill="#ccc" text-anchor="middle" dominant-baseline="middle">{!recording.downloaded ? '&#x2B07;' : '&#10003;'}</text>
+            </svg>
+          </button>
+          <button onclick="remove(index)" class="rec-card-btn">
+            &#10005;
+          </button>
+        </div>
+      {end:each}
+    </div>
   {end:if}
+
   <div class="visualizer">
-  <div class="top">
-      {start:if isPlaying || isRecording}
-          <div class="top-content">
-            <span class="fade-in-out">{isRecording ? "REC" : isPlaying ? "PLAY": ""}</span>
-            <span>{currentTime}</span>
-          </div>
-      {end:if}
+    <div class="top">
+        <div style="display:{isPlaying || isRecording ? 'flex': 'none'};" class="top-content">
+          <span class="fade-in-out">{isRecording ? "REC" : isPlaying ? "PLAY": ""}</span>
+          <span>{currentTime}</span>
+        </div>
     </div>
     <div class="middle"></div>
   </div>
+
   <div class="buttons">
     <div class="button_pair">
       <div class="btn">
