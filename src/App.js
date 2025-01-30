@@ -162,6 +162,7 @@ const state = new ReactiveState({
   async remove(index) {
     let { blob, src } = this.recordings.find((_, i) => i === index);
     let isCurrentAudio = await findMatchingBlob(this.audio, blob);
+
     if (this.isPlaying && isCurrentAudio) {
       this.error =
         "Can't remove recording while it's playing. pause or stop first.";
@@ -170,7 +171,11 @@ const state = new ReactiveState({
     let filtered = this.recordings.filter((_, i) => i != index);
 
     // if the selected recording gets removed.
-    if (filtered.length && filtered[0]) {
+    if (
+      filtered.length &&
+      filtered.every((rec) => !rec.selected) &&
+      filtered[0]
+    ) {
       filtered[0].selected = true;
       this.audio.src = filtered[0].src;
     }
