@@ -69,7 +69,7 @@ const state = new ReactiveState({
           }
           let data = {
             selected: true,
-            title: `untitled_${this.recordings.length + 1}.ogg`,
+            title: `untitled_${this.recordings.length + 1}.webm`,
             blob,
             src: URL.createObjectURL(blob),
             downloaded: false,
