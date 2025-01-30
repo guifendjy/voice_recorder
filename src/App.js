@@ -5,8 +5,8 @@ import { setupRecorder, formatTime, findMatchingBlob } from "./utils";
 
 const { ReactiveState, createElement } = master; // from CDN link
 
-let audioType = "audio/webm";
-let recorder = setupRecorder(); // returns a promise
+let audioType = "audio/mp4";
+let recorder = setupRecorder({ audioType }); // returns a promise
 
 const state = new ReactiveState({
   // logo used in template
