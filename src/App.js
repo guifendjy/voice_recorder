@@ -3,7 +3,7 @@ import vite from "/vite.svg";
 
 import { setupRecorder, formatTime, findMatchingBlob } from "./utils";
 
-const { ReactiveState, createElement } = master; // from CDN link
+const { ReactiveState, createElement } = window.master; // from CDN link
 
 let recorder = setupRecorder(); // returns a promise
 
