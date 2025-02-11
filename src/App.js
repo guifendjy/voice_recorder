@@ -6,7 +6,7 @@ import { setupRecorder, formatTime, findMatchingBlob } from "./utils";
 const { ReactiveState, createElement } = master; // from CDN link
 
 let audioType = "audio/mp4";
-let recorder = setupRecorder({ audioType }); // returns a promise
+let recorder = await setupRecorder({ audioType }); // returns a promise
 
 const state = new ReactiveState({
   // logo used in template
@@ -26,6 +26,7 @@ const state = new ReactiveState({
       this.error = recorder.error;
       return;
     } // to not work when if media devices or not accessible.
+
     this.isRecording = !this.isRecording;
     this.audioURL = null; // reset every time
     let timer = 0;
@@ -44,44 +45,40 @@ const state = new ReactiveState({
       }, 1000);
     }
 
-    recorder.then(({ stopRecording, startRecording }) => {
-      if (this.isRecording) {
-        startRecording();
-      } else {
-        stopRecording((audio, blob) => {
-          this.audio = audio;
+    if (this.isRecording) {
+      recorder.startRecording();
+    } else {
+      recorder.stopRecording((audio, blob) => {
+        this.audio = audio;
 
-          this.audio.ontimeupdate = () => {
-            if (audio.duration && audio.duration == audio.currentTime) {
-              this.isPlaying = false;
-            }
-            this.currentTime = `${formatTime(audio.currentTime)}`;
-          };
-
-          this.audio.load();
-
-          if (this.recordings.length) {
-            this.recordings = this.recordings = this.recordings.map(
-              (rec, i) => {
-                rec.selected = false;
-                return rec;
-              }
-            );
+        this.audio.ontimeupdate = () => {
+          if (audio.duration && audio.duration == audio.currentTime) {
+            this.isPlaying = false;
           }
-          let data = {
-            selected: true,
-            title: `untitled_${this.recordings.length + 1}.${
-              audioType.split("/")[1]
-            }`,
-            blob,
-            src: URL.createObjectURL(blob),
-            downloaded: false,
-          };
+          this.currentTime = `${formatTime(audio.currentTime)}`;
+        };
 
-          this.recordings = [...this.recordings, data];
-        });
-      }
-    });
+        this.audio.load();
+
+        if (this.recordings.length) {
+          this.recordings = this.recordings = this.recordings.map((rec, i) => {
+            rec.selected = false;
+            return rec;
+          });
+        }
+        let data = {
+          selected: true,
+          title: `untitled_${this.recordings.length + 1}.${
+            audioType.split("/")[1]
+          }`,
+          blob,
+          src: URL.createObjectURL(blob),
+          downloaded: false,
+        };
+
+        this.recordings = [...this.recordings, data];
+      });
+    }
   },
   play() {
     if (!this.audio) return; // can't be played if there are no url
@@ -187,7 +184,7 @@ const state = new ReactiveState({
 
 // error if not running on localhost or is secured
 const setTheme = () => {
-  document.body.setAttribute("data-theme", `${state.dark ? "dark" : "light"}`);
+  document.body.setAttribute("data-theme", state.dark ? "dark" : "light");
 };
 
 state.subscribe("dark", setTheme);
@@ -218,12 +215,11 @@ const template = /*html*/ `
       {for:each recording, index of recordings}
         <div class="recording">
           <span onclick="setAudioSrc(index)" class="recording-logo {recording.selected ? 'selected' : ''}">🔴</span>
-          <input onmouseenter="select" onchange="changeTitle(index)" class="recording-title" type="text" value="{recording.title}"/>
+          <input onclick="select" onchange="changeTitle(index)" class="recording-title" type="text" value="{recording.title}"/>
           <div class="rec-card-buttons">
-              
               <button onclick="download(index)" class="rec-card-btn">
               <!-- there are issues if the some word in the condition match one of the possible results(NEED FIXED IN DOM_MASTER)!!! -->
-                <i class="fa-solid {recording.downloaded ? 'fa-check': 'fa-arrow-down'}"></i>
+                <i class="fa-solid {recording.downloaded ? 'fa-check': 'fa-download'}"></i>
               </button>
               <button onclick="remove(index)" class="rec-card-btn">
                 <i class="fa-solid fa-trash"></i>
@@ -275,11 +271,11 @@ let App = createElement(template, state);
 let visualizerContainer = App.querySelector(".middle");
 
 if (!recorder.error) {
-  recorder.then(({ canvas }) => {
-    canvas.style.borderBottom = "1px solid #d42a02";
-    visualizerContainer.appendChild(canvas);
-  });
+  const canvas = recorder.canvas;
+  canvas.style.borderBottom = "1px solid #d42a02";
+  visualizerContainer.appendChild(canvas);
 } else {
   state.error = recorder.error;
 }
+
 export default App;

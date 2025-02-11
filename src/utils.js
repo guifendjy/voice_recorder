@@ -22,8 +22,7 @@ export function setupRecorder({ audioType = "audio/webm" } = {}) {
         return setupStream(stream, audioType);
       })
       .catch((err) => {
-        console.error("Error setting up recorder", err);
-        return { error: "Error setting up recorder" };
+        return { error: `${err}. allow permission in the settings.` };
       });
   } catch (err) {
     response = {

@@ -385,9 +385,8 @@ input:checked + .slider:before {
   align-items: center;
   background-color: #2e3139;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.2rem;
+  min-width: 40px;
+  min-height: 40px;
   cursor: pointer;
 }
 
