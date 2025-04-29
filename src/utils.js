@@ -13,7 +13,7 @@ let clearAnimation;
 
 export function setupRecorder({ audioType = "audio/webm" } = {}) {
   let response;
-  try {npm
+  try {
     response = navigator.mediaDevices
       .getUserMedia({
         audio: true,
